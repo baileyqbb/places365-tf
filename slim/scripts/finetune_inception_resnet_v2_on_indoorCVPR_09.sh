@@ -17,7 +17,7 @@ PRETRAINED_CHECKPOINT_DIR=/home/qianbb/PycharmProjects/places365-tf/models-place
 TRAIN_DIR=/home/qianbb/PycharmProjects/places365-tf/models-indoorCVPR_09/inception_resnet_v2
 
 # Where the dataset is saved to.
-DATASET_DIR=/home/qianbb/Data/indoorCVPR_09/Images/train_eval_tfrecord/
+DATASET_DIR=/home/qianbb/data/indoorCVPR_09/Images/train_eval_tfrecord/
 
 # Download the pre-trained checkpoint.
 if [ ! -d "$PRETRAINED_CHECKPOINT_DIR" ]; then
@@ -46,7 +46,7 @@ python train_image_classifier.py \
   --checkpoint_exclude_scopes=InceptionResnetV2/AuxLogits,InceptionResnetV2/Logits \
   --trainable_scopes=InceptionResnetV2/AuxLogits,InceptionResnetV2/Logits\
   --max_number_of_steps=3000000 \
-  --batch_size=64 \
+  --batch_size=32 \
   --learning_rate=0.01 \
   --save_interval_secs=60 \
   --save_summaries_secs=60 \

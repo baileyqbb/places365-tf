@@ -75,11 +75,11 @@ import threading
 import numpy as np
 import tensorflow as tf
 
-tf.app.flags.DEFINE_string('train_directory', '/home/data/indoorCVPR_09/Images/train/',
+tf.app.flags.DEFINE_string('train_directory', '/home/qianbb/data/indoorCVPR_09/Images/train/',
                            'Training data directory`  ')
-tf.app.flags.DEFINE_string('validation_directory', '/home/data/indoorCVPR_09/Images/eval/',
+tf.app.flags.DEFINE_string('validation_directory', '/home/qianbb/data/indoorCVPR_09/Images/eval/',
                            'Validation data directory')
-tf.app.flags.DEFINE_string('output_directory', '/home/data/indoorCVPR_09/Images/train_eval_tfrecord/',
+tf.app.flags.DEFINE_string('output_directory', '/home/qianbb/data/indoorCVPR_09/Images/train_eval_tfrecord/',
                            'Output data directory')
 
 tf.app.flags.DEFINE_integer('train_shards', 1,
@@ -97,7 +97,7 @@ tf.app.flags.DEFINE_integer('num_threads', 1,
 #   flower
 # where each line corresponds to a label. We map each label contained in
 # the file to an integer corresponding to the line number starting from 0.
-tf.app.flags.DEFINE_string('labels_file', '/home/data/indoorCVPR_09/indoorCVPR_09_labels.txt', 'Labels file')
+tf.app.flags.DEFINE_string('labels_file', '/home/qianbb/data/indoorCVPR_09/indoorCVPR_09_labels.txt', 'Labels file')
 # NOTE: The categories_places365.txt file contains labels with indices after each string label. Extra step is needed to
 # remove the indices. E.g. Get the first column only.
 
@@ -200,6 +200,7 @@ def _process_image(filename, coder):
     width: integer, image width in pixels.
   """
   # Read the image file.
+  #print(filename)
   with tf.gfile.FastGFile(filename, 'rb') as f:
     image_data = f.read()
 
