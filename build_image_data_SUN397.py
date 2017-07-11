@@ -75,19 +75,19 @@ import threading
 import numpy as np
 import tensorflow as tf
 
-tf.app.flags.DEFINE_string('train_directory', '/home/qianbb/data/indoorCVPR_09/Images/train/',
-                           'Training data directory`  ')
-tf.app.flags.DEFINE_string('validation_directory', '/home/qianbb/data/indoorCVPR_09/Images/eval/',
+tf.app.flags.DEFINE_string('train_directory', '/home/data/SUN2012/SUN397/train/',
+                           'Training data directory')
+tf.app.flags.DEFINE_string('validation_directory', '/home/data/SUN2012/SUN397/eval/',
                            'Validation data directory')
-tf.app.flags.DEFINE_string('output_directory', '/home/qianbb/data/indoorCVPR_09/Images/train_eval_tfrecord/',
+tf.app.flags.DEFINE_string('output_directory', '/home/data/SUN2012/SUN397-tfrecord',
                            'Output data directory')
 
-tf.app.flags.DEFINE_integer('train_shards', 1,
+tf.app.flags.DEFINE_integer('train_shards', 4,
                             'Number of shards in training TFRecord files.')
-tf.app.flags.DEFINE_integer('validation_shards', 1,
+tf.app.flags.DEFINE_integer('validation_shards', 4,
                             'Number of shards in validation TFRecord files.')
 
-tf.app.flags.DEFINE_integer('num_threads', 1,
+tf.app.flags.DEFINE_integer('num_threads', 4,
                             'Number of threads to preprocess the images.')
 
 # The labels file contains a list of valid labels are held in this file.
@@ -97,7 +97,7 @@ tf.app.flags.DEFINE_integer('num_threads', 1,
 #   flower
 # where each line corresponds to a label. We map each label contained in
 # the file to an integer corresponding to the line number starting from 0.
-tf.app.flags.DEFINE_string('labels_file', '/home/qianbb/data/indoorCVPR_09/indoorCVPR_09_labels.txt', 'Labels file')
+tf.app.flags.DEFINE_string('labels_file', '/home/data/SUN2012/SUN397/ClassName.txt', 'Labels file')
 # NOTE: The categories_places365.txt file contains labels with indices after each string label. Extra step is needed to
 # remove the indices. E.g. Get the first column only.
 
@@ -200,7 +200,6 @@ def _process_image(filename, coder):
     width: integer, image width in pixels.
   """
   # Read the image file.
-  #print(filename)
   with tf.gfile.FastGFile(filename, 'rb') as f:
     image_data = f.read()
 
@@ -366,10 +365,10 @@ def _find_image_files(data_dir, labels_file):
     labels: list of integer; each integer identifies the ground truth.
   """
   print('Determining list of input files and labels from %s.' % data_dir)
-  # unique_labels = [l.strip() for l in tf.gfile.FastGFile(
-  #    labels_file, 'r').readlines()]
-  unique_labels = [l.strip().split(' ')[0] for l in tf.gfile.FastGFile(
+  unique_labels = [l.strip() for l in tf.gfile.FastGFile(
       labels_file, 'r').readlines()]
+  #unique_labels = [l.strip().split(' ')[0] for l in tf.gfile.FastGFile(
+  #    labels_file, 'r').readlines()]
 
   labels = []
   filenames = []
@@ -431,8 +430,8 @@ def main(unused_argv):
   # Run it!
   _process_dataset('validation', FLAGS.validation_directory,
                    FLAGS.validation_shards, FLAGS.labels_file)
-  #_process_dataset('train', FLAGS.train_directory,
-  #                 FLAGS.train_shards, FLAGS.labels_file)
+  _process_dataset('train', FLAGS.train_directory,
+                   FLAGS.train_shards, FLAGS.labels_file)
 
 
 if __name__ == '__main__':

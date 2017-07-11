@@ -14,7 +14,7 @@ set -e
 PRETRAINED_CHECKPOINT_DIR=/home/qianbb/Projects/places365-tf/models/pre-trained
 
 # Where the training (fine-tuned) checkpoint and logs will be saved to.
-TRAIN_DIR=/home/qianbb/Projects/places365-tf/models/inception_resnet_v2
+TRAIN_DIR=/home/qianbb/Projects/places365-tf/models-places365/inception_resnet_v2
 
 # Where the dataset is saved to.
 DATASET_DIR=/home/data/ILSVRC/place2/dataset_tfrecord/

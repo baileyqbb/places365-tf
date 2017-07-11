@@ -3,6 +3,7 @@ import numpy as np
 import os
 import tensorflow as tf
 
+from time import clock
 from datasets import dataset_factory
 from nets import nets_factory
 from preprocessing import preprocessing_factory
@@ -46,10 +47,6 @@ slim = tf.contrib.slim
 
 def predictor(image):
     #with tf.Graph().as_default():
-    #####################################
-    # Load image data #
-    #####################################
-    #image = tf.image.decode_jpeg(tf.read_file(FLAGS.image_file), channels=3)    #!!!!This must be called under tf.Graph().as_default()!!!!
 
     #####################################
     # Select the preprocessing function #
@@ -71,8 +68,6 @@ def predictor(image):
 
 
     image_size = network_fn.default_image_size
-    #image_size=299
-    print(image_size)
 
     processed_image = image_preprocessing_fn(image, image_size, image_size)
 
@@ -80,7 +75,6 @@ def predictor(image):
 
     # Create the model
     logits, _ = network_fn(processed_images)
-    #logits, _ = inception_resnet_v2.inception_resnet_v2(processed_images)
 
     probabilities = tf.nn.softmax(logits)
 
@@ -90,26 +84,21 @@ def predictor(image):
     else:
         checkpoint_path = FLAGS.checkpoint_path
 
-    #variables_to_restore = []
-    #for var in slim.get_model_variables('InceptionResnetV2'):
-    #    variables_to_restore.append(var)
-
-    print(checkpoint_path)
-    #with tf.Session() as sess:
-    #if slim.get_model_variables('InceptionResnetV2') == []:
-    #    print("Model variables are empty!")
-    #    return
-
     init_fn = slim.assign_from_checkpoint_fn(
         checkpoint_path,
         slim.get_model_variables())
 
-    with tf.Session() as sess:
+    with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
         init_fn(sess)
 
+        start = clock()
         np_image, network_input, probabilities = sess.run([image,
                                                            processed_image,
                                                            probabilities])
+        finish = clock()
+        print('Prediction time cost: %0.4f ms' % ((finish - start)/1000))
+        #print((finish - start) / 1000)
+
         probabilities = probabilities[0, 0:]
         sorted_indx = [i[0] for i in sorted(enumerate(-probabilities),
                                             key=lambda x:x[1])]

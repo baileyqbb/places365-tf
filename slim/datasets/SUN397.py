@@ -12,12 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-"""Provides data for the indoorCVPR_09 dataset.
+"""Provides data for the SUN2012/SUN397 dataset.
 
 The dataset scripts used to create the dataset can be found at:
-build_train_image_data_indoorCVPR_09.py
-NOTE: The original dataset contains some images with false image format which could not be read by the training program.
-These images have been eliminated manually.
+build_image_data_SUN397.py
 """
 
 from __future__ import absolute_import
@@ -32,13 +30,11 @@ from datasets import dataset_utils
 
 slim = tf.contrib.slim
 
-_FILE_PATTERN = '%s-*-of-00001'
+_FILE_PATTERN = '%s-*-of-00004'
 
-SPLITS_TO_SIZES = {'train': 14231, 'validation': 1332}
+SPLITS_TO_SIZES = {'train': 79591, 'validation': 15866}
 
-_NUM_CLASSES = 67
-
-LABEL_FILE = '/home/qianbb/data/indoorCVPR_09/indoorCVPR_09_labels.txt'
+_NUM_CLASSES = 397
 
 _ITEMS_TO_DESCRIPTIONS = {
     'image': 'A color image of varying size.',
@@ -52,26 +48,24 @@ def create_readable_names_for_places365_labels():
           labels_to_names: dictionary where keys are integers from 1 to 365
           and values are human-readable names.
     """
-    #filename = "../categories_places365.txt"
+    filename = "../ClassName.txt"
     #if not os.path.exists(filename):
     #    file_url = 'https://raw.githubusercontent.com/metalbubble/places_devkit/master/data/categories_places365.txt'
     #    filename = urllib.request.urlretrieve(file_url)
 
-    if not os.path.exists(LABEL_FILE):
-        print('Cannot find the label file: %s' % LABEL_FILE)
-        return {}
-
-    synset_list = [s.strip() for s in open(LABEL_FILE).readlines()]
+    synset_list = [s.strip() for s in open(filename).readlines()]
     num_synsets_in_ilsvrc = len(synset_list)
     assert num_synsets_in_ilsvrc == _NUM_CLASSES
 
     synset_to_human = {}
+    indx = 0
     for s in synset_list:
-        parts = s.strip().split(' ')
-        assert len(parts) == 2
-        synset = parts[0]
-        indx = int(parts[1])
-        synset_to_human[indx] = synset
+        parts = s.strip().split('/')
+        #assert len(parts) == 2
+        #synset = parts[0]
+        #indx = int(parts[1])
+        labels = parts[2:]
+        synset_to_human[indx] = labels
     return synset_to_human
 
 

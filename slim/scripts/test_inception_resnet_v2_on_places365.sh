@@ -12,7 +12,7 @@ set -e
 
 IMAGE_FILE=/home/qianbb/PycharmProjects/places365-tf/First_Student_IC_school_bus_202076.jpg
 
-CHECKPOINT_PATH=/home/qianbb/PycharmProjects/places365-tf/models/inception_resnet_v2/all/
+CHECKPOINT_PATH=/home/qianbb/PycharmProjects/places365-tf/models-places365/inception_resnet_v2/all/
 #CHECKPOINT_PATH=/home/qianbb/Projects/places365-tf/models/pre-trained/inception_resnet_v2_2016_08_30.ckpt
 
 python predict_image_classifier.py \

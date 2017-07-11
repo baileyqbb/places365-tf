@@ -24,6 +24,7 @@ from datasets import imagenet
 from datasets import mnist
 from datasets import places365
 from datasets import indoorCVPR_09
+from datasets import SUN397
 
 datasets_map = {
     'cifar10': cifar10,
@@ -31,7 +32,8 @@ datasets_map = {
     'imagenet': imagenet,
     'mnist': mnist,
     'places365': places365,
-    'indoorCVPR_09': indoorCVPR_09
+    'indoorCVPR_09': indoorCVPR_09,
+    'SUN397': SUN397
 }
 
 
