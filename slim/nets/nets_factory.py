@@ -55,7 +55,7 @@ networks_map = {'alexnet_v2': alexnet.alexnet_v2,
                 'resnet_v2_152': resnet_v2.resnet_v2_152,
                 'resnet_v2_200': resnet_v2.resnet_v2_200,
                 'mobilenet_v1': mobilenet_v1.mobilenet_v1,
-                'xception': xception,
+                'xception': xception.xception,
                }
 
 arg_scopes_map = {'alexnet_v2': alexnet.alexnet_v2_arg_scope,
