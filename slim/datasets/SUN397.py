@@ -48,7 +48,7 @@ def create_readable_names_for_places365_labels():
           labels_to_names: dictionary where keys are integers from 1 to 365
           and values are human-readable names.
     """
-    filename = "../ClassName.txt"
+    filename = "../SUN_397_ClassName.txt"
     #if not os.path.exists(filename):
     #    file_url = 'https://raw.githubusercontent.com/metalbubble/places_devkit/master/data/categories_places365.txt'
     #    filename = urllib.request.urlretrieve(file_url)
