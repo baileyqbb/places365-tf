@@ -11,10 +11,10 @@
 set -e
 
 # Where the pre-trained mobilenet_v1_1_224 checkpoint is saved to.
-PRETRAINED_CHECKPOINT_DIR=/home/qianbb/Projects/places365-tf/models/mobilenet_v1_1_224/all
+PRETRAINED_CHECKPOINT_DIR=/home/qianbb/PycharmProjects/places365-tf/models-indoorCVPR_09/mobilenet_v1_1_224/all
 
 # Where the training (fine-tuned) checkpoint and logs will be saved to.
-TRAIN_DIR=/home/qianbb/Projects/places365-tf/models-indoorCVPR_09/mobilenet_v1_1_224
+TRAIN_DIR=/home/qianbb/PycharmProjects/places365-tf/models-indoorCVPR_09/mobilenet_v1_1_224
 
 # Where the dataset is saved to.
 DATASET_DIR=/home/qianbb/data/indoorCVPR_09/Images/train_eval_tfrecord/
@@ -36,23 +36,23 @@ fi
 #  --dataset_dir=${DATASET_DIR}
 
 # Fine-tune only the new layers for 3000 steps.
-python train_image_classifier.py \
-  --train_dir=${TRAIN_DIR} \
-  --dataset_name=indoorCVPR_09 \
-  --dataset_split_name=train \
-  --dataset_dir=${DATASET_DIR} \
-  --model_name=mobilenet_v1 \
-  --checkpoint_path=${PRETRAINED_CHECKPOINT_DIR} \
-  --checkpoint_exclude_scopes=MobilenetV1/Logits \
-  --trainable_scopes=MobilenetV1/Logits \
-  --max_number_of_steps=30000 \
-  --batch_size=32 \
-  --learning_rate=0.01 \
-  --save_interval_secs=60 \
-  --save_summaries_secs=60 \
-  --log_every_n_steps=100 \
-  --optimizer=rmsprop \
-  --weight_decay=0.00004
+#python train_image_classifier.py \
+#  --train_dir=${TRAIN_DIR} \
+#  --dataset_name=indoorCVPR_09 \
+#  --dataset_split_name=train \
+#  --dataset_dir=${DATASET_DIR} \
+#  --model_name=mobilenet_v1 \
+#  --checkpoint_path=${PRETRAINED_CHECKPOINT_DIR} \
+#  --checkpoint_exclude_scopes=MobilenetV1/Logits \
+#  --trainable_scopes=MobilenetV1/Logits \
+#  --max_number_of_steps=30000 \
+#  --batch_size=32 \
+#  --learning_rate=0.01 \
+#  --save_interval_secs=60 \
+#  --save_summaries_secs=60 \
+#  --log_every_n_steps=100 \
+#  --optimizer=rmsprop \
+#  --weight_decay=0.00004
 #  --num_clones=1
 #  --clone_on_cpu=True
 
@@ -67,29 +67,29 @@ python eval_image_classifier.py \
 
 
 # Fine-tune all the new layers for 1000 steps.
-python train_image_classifier.py \
-  --train_dir=${TRAIN_DIR}/all \
-  --dataset_name=indoorCVPR_09 \
-  --dataset_split_name=train \
-  --dataset_dir=${DATASET_DIR} \
-  --checkpoint_path=${TRAIN_DIR} \
-  --model_name=mobilenet_v1 \
-  --max_number_of_steps=100000 \
-  --batch_size=32 \
-  --learning_rate=0.001 \
-  --save_interval_secs=60 \
-  --save_summaries_secs=60 \
-  --log_every_n_steps=100 \
-  --optimizer=rmsprop \
-  --weight_decay=0.00004
+#python train_image_classifier.py \
+#  --train_dir=${TRAIN_DIR}/all \
+#  --dataset_name=indoorCVPR_09 \
+#  --dataset_split_name=train \
+#  --dataset_dir=${DATASET_DIR} \
+#  --checkpoint_path=${TRAIN_DIR} \
+#  --model_name=mobilenet_v1 \
+#  --max_number_of_steps=100000 \
+#  --batch_size=32 \
+#  --learning_rate=0.001 \
+#  --save_interval_secs=60 \
+#  --save_summaries_secs=60 \
+#  --log_every_n_steps=100 \
+#  --optimizer=rmsprop \
+#  --weight_decay=0.00004
 #  --num_clones=1
 #  --clone_on_cpu=True
 
 # Run evaluation.
-python eval_image_classifier.py \
-  --checkpoint_path=${TRAIN_DIR}/all \
-  --eval_dir=${TRAIN_DIR}/all \
-  --dataset_name=indoorCVPR_09 \
-  --dataset_split_name=validation \
-  --dataset_dir=${DATASET_DIR} \
-  --model_name=mobilenet_v1
+#python eval_image_classifier.py \
+#  --checkpoint_path=${TRAIN_DIR}/all \
+#  --eval_dir=${TRAIN_DIR}/all \
+#  --dataset_name=indoorCVPR_09 \
+#  --dataset_split_name=validation \
+#  --dataset_dir=${DATASET_DIR} \
+#  --model_name=mobilenet_v1

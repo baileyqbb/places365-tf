@@ -45,7 +45,7 @@ _ITEMS_TO_DESCRIPTIONS = {
     'label': 'A single integer between 1 and 365',
 }
 
-def create_readable_names_for_places365_labels():
+def create_readable_names_for_indoorCVPR_09_labels():
     """Create a dict mapping label id to human readable string.
 
       Returns:

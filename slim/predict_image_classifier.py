@@ -7,6 +7,7 @@ from time import clock
 from datasets import dataset_factory
 from nets import nets_factory
 from preprocessing import preprocessing_factory
+from datasets import indoorCVPR_09
 from datasets import places365
 
 #######################
@@ -96,14 +97,15 @@ def predictor(image):
                                                            processed_image,
                                                            probabilities])
         finish = clock()
-        print('Prediction time cost: %0.4f ms' % ((finish - start)/1000))
+        print('Prediction time cost: %0.4f s' % ((finish - start)))
         #print((finish - start) / 1000)
 
         probabilities = probabilities[0, 0:]
         sorted_indx = [i[0] for i in sorted(enumerate(-probabilities),
                                             key=lambda x:x[1])]
 
-    names = places365.create_readable_names_for_places365_labels()
+    #names = places365.create_readable_names_for_places365_labels()
+    names = indoorCVPR_09.create_readable_names_for_indoorCVPR_09_labels()
     for i in range(5):
         indx = sorted_indx[i]
         print('Probability %0.2f => classs_name=%s' %
