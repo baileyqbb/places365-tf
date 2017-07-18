@@ -31,6 +31,7 @@ from nets import resnet_v1
 from nets import resnet_v2
 from nets import vgg
 from nets import xception
+from nets import resnext
 
 slim = tf.contrib.slim
 
@@ -56,6 +57,10 @@ networks_map = {'alexnet_v2': alexnet.alexnet_v2,
                 'resnet_v2_200': resnet_v2.resnet_v2_200,
                 'mobilenet_v1': mobilenet_v1.mobilenet_v1,
                 'xception': xception.xception,
+                'resnext_50': resnext.resnext_50,
+                'resnext_101': resnext.resnext_101,
+                'resnext_152': resnext.resnext_152,
+                'resnext_200': resnext.resnext_200,
                }
 
 arg_scopes_map = {'alexnet_v2': alexnet.alexnet_v2_arg_scope,
@@ -81,6 +86,10 @@ arg_scopes_map = {'alexnet_v2': alexnet.alexnet_v2_arg_scope,
                   'resnet_v2_200': resnet_v2.resnet_arg_scope,
                   'mobilenet_v1': mobilenet_v1.mobilenet_v1_arg_scope,
                   'xception': xception.xception_arg_scope,
+                  'resnext_50': resnext.resnext_arg_scope,
+                  'resnext_101': resnext.resnext_arg_scope,
+                  'resnext_152': resnext.resnext_arg_scope,
+                  'resnext_200': resnext.resnext_arg_scope,
                  }
 
 
