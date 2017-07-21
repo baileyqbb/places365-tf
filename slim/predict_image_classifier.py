@@ -111,10 +111,12 @@ def predictor(image):
         print('Probability %0.2f => classs_name=%s' %
               (probabilities[indx], names[indx]))
 
+
 def main(_):
     image = tf.image.decode_jpeg(tf.read_file(FLAGS.image_file),
                                  channels=3)
     predictor(image)
+
 
 if __name__ == '__main__':
     tf.app.run()

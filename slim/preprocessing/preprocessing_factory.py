@@ -70,6 +70,7 @@ def get_preprocessing(name, is_training=False):
       'resnext_101': vgg_preprocessing,
       'resnext_152': vgg_preprocessing,
       'resnext_200': vgg_preprocessing,
+      'shufflenet_50_g4_d272': vgg_preprocessing,
   }
 
   if name not in preprocessing_fn_map:
