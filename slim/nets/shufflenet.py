@@ -52,11 +52,11 @@ def group_conv(inputs, noutputs, kernel=1, stride=1, scope=None):
     for i in range(ngroups):
         with tf.variable_scope(scope + '_group_%i' % i):
             input_group = inputs[:, :, :, i, :]
-            print('input_group_dim: {0}; noutputs:{1}; ngroups:{2}; kernel:{3}'.format(input_group.get_shape(), noutputs, ngroups, kernel))
+            #print('input_group_dim: {0}; noutputs:{1}; ngroups:{2}; kernel:{3}'.format(input_group.get_shape(), noutputs, ngroups, kernel))
             if kernel == 1:
                 conv = slim.conv2d(input_group, noutputs, [1, 1], stride=1)
             elif kernel == 3:
-                conv = slim.separable_conv2d(input_group, noutputs, [3, 3], depth_multiplier=1, stride=stride, padding='SAME',
+                    conv = slim.separable_conv2d(input_group, noutputs, [3, 3], depth_multiplier=1, stride=stride, padding='SAME',
                                              normalizer_fn=slim.batch_norm, activation_fn=None, scope='DWConv')
                 #conv = slim.separable_conv2d(input_group, noutputs, [3, 3], scope='DWConv')
             batch_size, height, width, channels = conv.get_shape().as_list()
@@ -73,7 +73,7 @@ def bottleneck(inputs, depth, ngroups, stride, rate=1,
                outputs_collections=None, scope=None):
     with tf.variable_scope(scope, 'bottleneck_shufflenet', [inputs]) as sc:
         batch_size, input_height, input_width, depth_in = inputs.get_shape().as_list()
-        print(batch_size, input_width, input_width, depth_in)
+        #print(batch_size, input_width, input_width, depth_in)
         if depth_in % ngroups != 0:
             ValueError('The group number needs to be divisible to the number of channels.')
 
@@ -189,6 +189,7 @@ def shufflenet(inputs,
                             outputs_collections=end_points_collection):
             with slim.arg_scope([slim.batch_norm], is_training=is_training):
                 net = inputs
+                print('input name: %s' % net.name)
                 if include_root_block:
                     if output_stride is not None:
                         if output_stride % 4 != 0:
@@ -200,6 +201,7 @@ def shufflenet(inputs,
                     with slim.arg_scope([slim.conv2d],
                                         activation_fn=None, normalizer_fn=None):
                         net = resnet_utils.conv2d_same(net, 24, 3, stride=2, scope='conv1')
+                        #print('net name: %s' % net.name)
                     net = slim.max_pool2d(net, [3, 3], stride=2, scope='pool1')
                 net = resnet_utils.stack_blocks_dense(net, blocks, output_stride)
                 # This is needed because the pre-activation variant does not have batch
@@ -221,6 +223,8 @@ def shufflenet(inputs,
                     end_points_collection)
                 if num_classes is not None:
                     end_points['predictions'] = slim.softmax(logits, scope='predictions')
+
+                #print('Scope name: %s' % sc.name)
                 return logits, end_points
 shufflenet.default_image_size = 224
 

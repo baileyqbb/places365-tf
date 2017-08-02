@@ -10,9 +10,9 @@
 # ./slim/scripts/test_shufflenet_50_g4_d272_on_indoorCVPR_09.sh
 set -e
 
-IMAGE_FILE=/home/qianbb/PycharmProjects/places365-tf/First_Student_IC_school_bus_202076.jpg
+IMAGE_FILE=/home/qianbb/PycharmProjects/places365-tf/livingroom.jpg
 
-CHECKPOINT_PATH=/home/qianbb/PycharmProjects/places365-tf/models-indoorCVPR_09/mobilenet_v1_1_224/all/
+CHECKPOINT_PATH=/home/qianbb/PycharmProjects/places365-tf/models-indoorCVPR_09/shufflenet_50_g4_d272/all/
 #CHECKPOINT_PATH=/home/qianbb/Projects/places365-tf/models/pre-trained/inception_resnet_v2_2016_08_30.ckpt
 
 python predict_image_classifier.py \

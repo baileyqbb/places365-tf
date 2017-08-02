@@ -72,7 +72,7 @@ def predictor(image):
 
     processed_image = image_preprocessing_fn(image, image_size, image_size)
 
-    processed_images = tf.expand_dims(processed_image, 0)
+    processed_images = tf.expand_dims(processed_image, 0, name="inputs")
 
     # Create the model
     logits, _ = network_fn(processed_images)
@@ -89,12 +89,18 @@ def predictor(image):
         checkpoint_path,
         slim.get_model_variables())
 
-    with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
+    """
+    var_to_restore = slim.get_model_variables()
+    var_names = [var.op.name for var in var_to_restore]
+    print(var_names)
+    """
+
+    with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as sess:
         init_fn(sess)
 
         start = clock()
         np_image, network_input, probabilities = sess.run([image,
-                                                           processed_image,
+                                                           processed_images,
                                                            probabilities])
         finish = clock()
         print('Prediction time cost: %0.4f s' % ((finish - start)))
@@ -110,6 +116,9 @@ def predictor(image):
         indx = sorted_indx[i]
         print('Probability %0.2f => classs_name=%s' %
               (probabilities[indx], names[indx]))
+
+    nodenames = [n.name for n in tf.get_default_graph().as_graph_def().node[:100]]
+    print(nodenames)
 
 
 def main(_):

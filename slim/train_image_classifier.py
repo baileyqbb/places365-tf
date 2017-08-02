@@ -20,6 +20,8 @@ from __future__ import print_function
 
 import tensorflow as tf
 
+from tensorflow.contrib.slim.python.slim.learning import train_step
+
 from datasets import dataset_factory
 from deployment import model_deploy
 from nets import nets_factory
@@ -69,6 +71,11 @@ tf.app.flags.DEFINE_integer(
 
 tf.app.flags.DEFINE_integer(
     'task', 0, 'Task id of the replica running the training.')
+
+tf.app.flags.DEFINE_integer(
+    'validation_check', 5000,
+    'The frequency with which the trained model is validated.'
+)
 
 ######################
 # Optimization Flags #
@@ -375,6 +382,18 @@ def _get_variables_to_train():
     variables_to_train.extend(variables)
   return variables_to_train
 
+"""
+def train_step_fn(session, *args, **kwargs):
+    total_loss, should_stop = train_step(session, *args, **kwargs)
+
+    if train_step_fn.step % FLAGS.validation_check == 0:
+        accuracy = session.run(train_step_fn.accuracy_validation)
+        print('Step %s - Loss: %.2f Accuracy: %.2f%%' % (
+            str(train_step_fn.step).rjust(6, '0'), total_loss, accuracy * 100))
+
+    train_step_fn.step += 1
+    return [total_loss, should_stop]
+"""
 
 def main(_):
   if not FLAGS.dataset_dir:
