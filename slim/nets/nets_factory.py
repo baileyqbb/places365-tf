@@ -63,6 +63,7 @@ networks_map = {'alexnet_v2': alexnet.alexnet_v2,
                 'resnext_152': resnext.resnext_152,
                 'resnext_200': resnext.resnext_200,
                 'shufflenet_50_g4_d272': shufflenet.shufflenet_50_g4_d272,
+                'shufflenet_50_g4_d136': shufflenet.shufflenet_50_g4_d136,
                }
 
 arg_scopes_map = {'alexnet_v2': alexnet.alexnet_v2_arg_scope,
@@ -93,6 +94,7 @@ arg_scopes_map = {'alexnet_v2': alexnet.alexnet_v2_arg_scope,
                   'resnext_152': resnext.resnext_arg_scope,
                   'resnext_200': resnext.resnext_arg_scope,
                   'shufflenet_50_g4_d272': shufflenet.shufflenet_arg_scope,
+                  'shufflenet_50_g4_d136': shufflenet.shufflenet_arg_scope,
                  }
 
 

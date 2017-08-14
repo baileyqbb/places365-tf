@@ -189,7 +189,7 @@ def shufflenet(inputs,
                             outputs_collections=end_points_collection):
             with slim.arg_scope([slim.batch_norm], is_training=is_training):
                 net = inputs
-                print('input name: %s' % net.name)
+                #print('input name: %s' % net.name)
                 if include_root_block:
                     if output_stride is not None:
                         if output_stride % 4 != 0:
@@ -276,3 +276,24 @@ def shufflenet_50_g4_d272(inputs,
                    include_root_block=True, spatial_squeeze=spatial_squeeze,
                    reuse=reuse, scope=scope)
 shufflenet_50_g4_d272.default_image_size = shufflenet.default_image_size
+
+
+def shufflenet_50_g4_d136(inputs,
+                          num_classes=None,
+                          is_training=True,
+                          global_pool=True,
+                          output_stride=None,
+                          spatial_squeeze=True,
+                          reuse=None,
+                          scope='shufflenet_50'):
+  """ResNet-50 model of [1]. See resnet_v2() for arg and return description."""
+  blocks = [
+      shufflenet_block('block1', base_depth=136, ngroups=4, num_units=4, stride=2),
+      shufflenet_block('block2', base_depth=136*2, ngroups=4, num_units=8, stride=2),
+      shufflenet_block('block3', base_depth=136*4, ngroups=4, num_units=4, stride=2),
+  ]
+  return shufflenet(inputs, blocks, num_classes, is_training=is_training,
+                   global_pool=global_pool, output_stride=output_stride,
+                   include_root_block=True, spatial_squeeze=spatial_squeeze,
+                   reuse=reuse, scope=scope)
+shufflenet_50_g4_d136.default_image_size = shufflenet.default_image_size
