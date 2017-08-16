@@ -35,6 +35,7 @@ import os.path
 import re
 import sys
 import tarfile
+import glob
 
 import numpy as np
 from six.moves import urllib
@@ -62,33 +63,40 @@ def create_graph():
     _ = tf.import_graph_def(graph_def, name='')
 
 
-def run_inference_on_image(image):
-  """Runs inference on an image.
-  Args:
+def prepare_images(filepath):
+    filetypes = ['*.jpg', '*.jpeg', '*.png', '*.gif']
+    filelist = []
+    for ftype in filetypes:
+        filelist.extend(glob.glob(os.path.join(filepath, ftype)))
+    return filelist
+
+
+
+def run_inference_on_image(image, labels, sess):
+    """Runs inference on an image.
+    Args:
     image: Image file name.
-  Returns:
+    Returns:
     Nothing
-  """
-  if not tf.gfile.Exists(image):
-      tf.logging.fatal('File does not exist %s', image)
-      return -1
-  image_data = tf.gfile.FastGFile(image, 'rb').read()
+    """
 
-  image = tf.image.decode_jpeg(tf.read_file(FLAGS.image_file),
-                               channels=3)
+    #image_data = tf.gfile.FastGFile(image, 'rb').read()
 
-  image_preprocessing_fn = preprocessing_factory.get_preprocessing(
-      FLAGS.model_name, is_training=False)
-  processed_image = image_preprocessing_fn(image, 224, 224)
+    image = tf.image.decode_jpeg(tf.read_file(image),
+                           channels=3)
 
-  processed_images = tf.expand_dims(processed_image, 0)
-  sess = tf.Session()
-  im_result = sess.run(processed_images)
+    image_preprocessing_fn = preprocessing_factory.get_preprocessing(
+    FLAGS.model_name, is_training=False)
+    processed_image = image_preprocessing_fn(image, 224, 224)
 
-  # Creates graph from saved GraphDef.
-  create_graph()
+    processed_images = tf.expand_dims(processed_image, 0)
+    #sess = tf.Session()
+    #im_result = sess.run(processed_images)
 
-  with tf.Session() as sess:
+    # Creates graph from saved GraphDef.
+    #create_graph()
+
+    #with tf.Session() as sess:
     # Some useful tensors:
     # 'softmax:0': A tensor containing the normalized prediction across
     #   1000 labels.
@@ -97,27 +105,67 @@ def run_inference_on_image(image):
     # 'DecodeJpeg/contents:0': A tensor containing a string providing JPEG
     #   encoding of the image.
     # Runs the softmax tensor by feeding the image_data as input to the graph.
-    names = [tensor.name for tensor in tf.get_default_graph().as_graph_def().node]
-    print(names[-5:])
+
+    #names = [tensor.name for tensor in tf.get_default_graph().as_graph_def().node]
+    #print(names[-5:])
+
+    im_result = sess.run(processed_images)
+
     input_tensor = sess.graph.get_operation_by_name(FLAGS.input_node_name)
     output_tensor = sess.graph.get_operation_by_name(FLAGS.output_node_name)
     predictions = sess.run(output_tensor.outputs[0],
-                           {input_tensor.outputs[0]: im_result})
+                       {input_tensor.outputs[0]: im_result})
     predictions = np.squeeze(predictions)
 
     top_k = predictions.argsort()[-FLAGS.num_top_predictions:][::-1]
-    labels = load_labels(FLAGS.label_file)
+    #labels = load_labels(FLAGS.label_file)
+    result = []
     for node_id in top_k:
-      human_string = labels[node_id]
-      score = predictions[node_id]
-      print('%s (score = %.5f)' % (human_string, score))
+        human_string = labels[node_id]
+        score = predictions[node_id]
+        print('%s (score = %.5f)' % (human_string, score))
+        result.append(human_string+'(%0.5f)' % score)
+
+    return result
 
 
 
 def main(_):
-  #image = (FLAGS.image_file if FLAGS.image_file else
-  #         os.path.join(FLAGS.model_dir, 'cropped_panda.jpg'))
-  run_inference_on_image(FLAGS.image_file)
+  # Prepare the output file
+  output_file = open(FLAGS.output_to_file, 'w')
+  output_file.write('Settings' + '\n')
+  output_file.write('MODEL_DIR:'  + FLAGS.model_dir + '\n')
+  output_file.write('MODEL_NAME:' + FLAGS.model_name + '\n')
+  output_file.write('GRAPH_FILE:' + FLAGS.graph_file + '\n')
+  output_file.write('OUTPUT_NODE:'+ FLAGS.output_node_name + '\n')
+  output_file.write('LABEL_FILE:' + FLAGS.label_file + '\n')
+
+  output_file.write('\nResults\n')
+
+  create_graph()
+  labels = load_labels(FLAGS.label_file)
+
+  sess = tf.Session()
+
+  if os.path.isdir(FLAGS.image_path):
+      imagelist = prepare_images(FLAGS.image_path)
+      indx = 1
+      for image in imagelist:
+          print('Inferencing: %d/%d' % (indx, len(imagelist)))
+          output_file.write('IMAGE_NAME:' + image + '\n')
+          results = run_inference_on_image(image, labels, sess)
+          output_file.write('INFERENCE:%s\n' % results)
+          indx += 1
+  else:
+      if not tf.gfile.Exists(FLAGS.image_path):
+          tf.logging.fatal('File does not exist %s', FLAGS.image_path)
+          return -1
+
+      output_file.write('IMAGE_NAME:' + FLAGS.image_path + '\n')
+      results = run_inference_on_image(FLAGS.image_path, labels, sess)
+      output_file.write('INFERENCE:%s\n' % results)
+
+  output_file.close()
 
 
 if __name__ == '__main__':
@@ -155,10 +203,11 @@ if __name__ == '__main__':
       """
   )
   parser.add_argument(
-      '--image_file',
+      '--image_path',
       type=str,
       default='',
       help='Absolute path to image file.'
+           'If the path is a folder, then load all the images under this folder'
   )
   parser.add_argument(
       '--label_file',
@@ -183,6 +232,12 @@ if __name__ == '__main__':
       type=int,
       default=5,
       help='Display this many predictions.'
+  )
+  parser.add_argument(
+      '--output_to_file',
+      type=str,
+      default='classification_results.txt',
+      help='Save the classification results to file.'
   )
 
   FLAGS, unparsed = parser.parse_known_args()
